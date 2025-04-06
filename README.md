@@ -19,7 +19,7 @@ A smart and interactive web-based Sudoku solver that allows users to **upload Su
 ## 🛠️ Tech Stack
 
 - **Frontend**: HTML, Tailwind CSS, JavaScript
-- **Backend**: Node.js, Express, TensorFlow.js
+- **Backend**:Python,fastAPI, TensorFlow.js
 - **Model**: CNN trained on handwritten digits (MNIST)
 
 ---
