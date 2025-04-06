@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Sudoku Solver</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <script src="https://unpkg.com/@phosphor-icons/web"></script>
+      <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+      <link rel="stylesheet" href="style.css">
+   </head>
+   <body class="flex flex-col items-center justify-center min-h-screen p-4 py-6 text-black bg-white transition-all duration-300" id="theme">
+      <!-- Light/Dark Mode Button -->
+      <button id="theme-toggle" class="absolute top-4 right-4 p-2 rounded-full w-15 h-15 bg-gray-500 dark:bg-gray-800 shadow-md">
+         <i id="theme-icon" class="ph ph-sun text-xl text-white dark:ph-moon"></i>
+         <div id="mode" class="hidden">light</div>
+      </button>
+      <h1 class="text-4xl font-extrabold mb-6 animate-bounce">Sudoku Solver</h1>
+      
+      <!-- Toggle Switch -->
+      <label class="flex items-center cursor-pointer mb-4">
+         <span class="mr-2 text-lg">Image Upload</span>
+         <input type="checkbox" id="toggle-mode" class="hidden">
+         <div class="relative w-12 h-6 bg-gray-300 rounded-full shadow-inner">
+            <div class="absolute w-6 h-6 bg-white rounded-full shadow top-0 left-0 transition-transform duration-300" id="toggle-knob"></div>
+         </div>
+         <span class="ml-2 text-lg">Manual Input</span>
+      </label>
+
+      <!-- Sudoku Image Upload Section -->
+      <div id="image-upload" class="mb-6 lg:w-1/2 space-y-4">
+         <!-- File input -->
+         <input
+            type="file"
+            id="sudoku-image"
+            accept="image/*"
+            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none p-2  "
+            />
+         <!-- Rules Section -->
+         <div class="mb-6 w-full lg:w-full mx-auto" id="rules-container">
+            <!-- Accordion Item for All Rules -->
+            <div class="border-b border-gray-300">
+               <button 
+                  id="rules"
+                  class="w-full text-left px-6 py-3 bg-gray-200 hover:bg-gray-300 focus:outline-none rounded-md text-black font-medium flex items-center justify-between">
+               <span>Precautions:</span>
+               <i id="arrow-icon" class="ph ph-caret-down transition-transform duration-300"></i>
+               </button>
+               <div id="content-all-rules" class="max-h-0 opacity-0 overflow-hidden transition-all  duration-500 ease-in-out text-gray-500">
+                  <ul class="list-inside pl-6 pr-8 py-4 text-sm space-y-4 font-medium">
+                     <li class="flex items-start space-x-3">
+                        <span class="w-3 h-3 bg-blue-500 flex-shrink-0 mr-2 mt-1"></span>
+                        <span>Ensure the use of high-resolution images for better accuracy.</span>
+                     </li>
+                     <li class="flex items-start space-x-3">
+                        <span class="w-3 mt-1 h-3 bg-blue-500 flex-shrink-0 mr-2"></span>
+                        <span>Crop the image so that the sudoku grid aligns with the outer borders, avoiding unnecessary space.</span>
+                     </li>
+                     <li class="flex items-start space-x-3">
+                        <span class="w-3 mt-1 h-3 bg-blue-500 flex-shrink-0 mr-2"></span>
+                        <span>Deep learning models will accurately identify digits within the image, ensuring efficient extraction.</span>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+         <!-- Result canvas -->
+         <canvas id="canvas" class="border w-full max-w-sm hidden mx-auto"></canvas>
+         <!-- display solved grid -->
+         <div id="sudokuImgGrid" class="hidden shadow-xl mx-auto w-full max-w-md aspect-square border-4 rounded-lg border-indigo-500/100 grid grid-cols-9 bg-white"></div>
+      </div>
+
+      <!-- Sudoku Grid (Manual Mode) -->
+      <div id="sudoku-grid-container" class="grid grid-cols-9 gap-2 w-full lg:w-2/5 aspect-w-1 aspect-h-1 p-2 mt-5 border-indigo-500 shadow-xl border-4 rounded-lg  hidden">
+        <!-- Sudoku cells will be dynamically added here by JavaScript -->
+      </div>
+
+      <!-- Buttons (shared for both modes) -->
+      <div class="mt-6 mx-auto justify-center flex gap-4">
+         <button id="solve-img" class="px-6 py-3 bg-green-500 text-white rounded-xl shadow-lg hover:bg-green-600 transform hover:scale-105 transition-all duration-300">Solve</button>
+         <button id="solve-grid" class="px-6 hidden py-3 bg-green-500 text-white rounded-xl shadow-lg hover:bg-green-600 transform hover:scale-105 transition-all duration-300">Solve</button>
+         <button id="reset-img" class="px-6 py-3 bg-red-500 text-white rounded-xl shadow-lg hover:bg-red-600 transform hover:scale-105 transition-all duration-300">Reset</button>
+         <button id="reset-grid" class="hidden px-6 py-3 bg-red-500 text-white rounded-xl shadow-lg hover:bg-red-600 transform hover:scale-105 transition-all duration-300">Reset</button>
+      </div>
+
+      <!-- Full-Page Loader Overlay -->
+      <div id="fullPageLoader"
+         class="fixed inset-0 bg-white bg-opacity-80 dark:bg-opacity-80 flex flex-col items-center justify-center z-50 hidden text-blue-600">
+         <svg class="w-16 h-16 dark:text-white animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"/>
+         </svg>
+         <p class="text-lg font-semibold mt-4">Processing...</p>
+      </div>
+
+      <script src="script.js"></script>
+   </body>
+</html>
