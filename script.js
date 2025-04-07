@@ -402,6 +402,7 @@ const validateAndFixSudokuGrid = async grid => {
 //sudoku image classifier
 const sudokuImageClassifier = async () => {
   const file = sudokuImg.files[0];
+  const start = Date.now ();
 
   if (!file) {
     createToast ('Please select an image.', 'error');
@@ -418,21 +419,40 @@ const sudokuImageClassifier = async () => {
     const formData = new FormData ();
     formData.append ('file', file);
     loader.classList.remove ('hidden');
+    document.getElementById ('loading-msg').innerText = 'Processing...';
+
     // const url = 'http://127.0.0.1:8000/process-sudoku/';
     const url = 'https://sudoku-server-tsc4.onrender.com/process-sudoku/';
+
+    const timeoutDuration = 30000;
+    let timeoutReached = false;
+
+    const timeout = setTimeout (() => {
+      timeoutReached = true;
+      console.log (document.getElementById ('loading-msg'));
+      document.getElementById ('loading-msg').innerText =
+        'Server is booting... Please wait a moment.';
+    }, timeoutDuration);
 
     const res = await fetch (url, {
       method: 'POST',
       body: formData,
     });
     const data = await res.json ();
+    const end = Date.now ();
+    const duration = end - start;
+
+    if (duration > timeoutDuration && !timeoutReached) {
+      document.getElementById ('loading-msg').innerText =
+        'Server is booting... Please wait a moment.';
+    }
     const validateData = await validateAndFixSudokuGrid (data);
     const solvedBoard = solveSudoku (validateData);
-    console.log (solvedBoard);
     displaySolvedSudokuGrid (solvedBoard.board);
     canvas.classList.add ('hidden');
     loader.classList.add ('hidden');
   } catch (err) {
+    console.log (err);
     loader.classList.add ('hidden');
 
     createToast ('Sorry!Something went wrong!', 'error');
