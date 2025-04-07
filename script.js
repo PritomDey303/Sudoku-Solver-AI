@@ -128,7 +128,7 @@ toggleMode.addEventListener ('change', function () {
     loader.classList.add ('bg-dark');
   } else {
     imageUpload.classList.remove ('hidden');
-    gridContainer.classList.add ('grid');
+    gridContainer.classList.add ('hidden');
     knob.style.transform = 'translateX(0)';
     resetGrid.classList.add ('hidden');
     resetImg.classList.remove ('hidden');
@@ -418,14 +418,13 @@ const sudokuImageClassifier = async () => {
     const formData = new FormData ();
     formData.append ('file', file);
     loader.classList.remove ('hidden');
+    // const url = 'http://127.0.0.1:8000/process-sudoku/';
+    const url = 'https://sudoku-server-tsc4.onrender.com/process-sudoku/';
 
-    const res = await fetch (
-      'https://sudoku-server-tsc4.onrender.com/process-sudoku/',
-      {
-        method: 'POST',
-        body: formData,
-      }
-    );
+    const res = await fetch (url, {
+      method: 'POST',
+      body: formData,
+    });
     const data = await res.json ();
     const validateData = await validateAndFixSudokuGrid (data);
     const solvedBoard = solveSudoku (validateData);
