@@ -77,6 +77,12 @@ themeToggle.addEventListener ('click', () => {
     themeMode.innerText = 'dark';
 
     contentRules.classList.remove ('text-gray-500');
+
+    loader.classList.remove ('bg-white');
+    loader.classList.remove ('text-blue-800');
+
+    loader.classList.add ('bg-black');
+    loader.classList.add ('text-white');
   } else {
     theme.classList.remove ('bg-gray-800');
     theme.classList.remove ('text-white');
@@ -90,6 +96,12 @@ themeToggle.addEventListener ('click', () => {
     contentRules.classList.add ('text-gray-500');
 
     themeMode.innerText = 'light';
+
+    loader.classList.remove ('bg-black');
+    loader.classList.remove ('text-white');
+
+    loader.classList.add ('bg-white');
+    loader.classList.add ('text-blue-800');
   }
 });
 /////////
@@ -123,9 +135,6 @@ toggleMode.addEventListener ('change', function () {
     rulesContainer.classList.add ('hidden');
     solveGridButton.classList.remove ('hidden');
     solveImgButton.classList.add ('hidden');
-
-    loader.classList.remove ('bg-white');
-    loader.classList.add ('bg-dark');
   } else {
     imageUpload.classList.remove ('hidden');
     gridContainer.classList.add ('hidden');
@@ -135,9 +144,6 @@ toggleMode.addEventListener ('change', function () {
     rulesContainer.classList.remove ('hidden');
     solveGridButton.classList.add ('hidden');
     solveImgButton.classList.remove ('hidden');
-
-    loader.classList.remove ('bg-dark');
-    loader.classList.add ('bg-white');
   }
 });
 
