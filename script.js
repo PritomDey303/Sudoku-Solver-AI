@@ -50,7 +50,7 @@ const createToast = (msg, type = 'info', duration = 3000) => {
   const typeClasses = {
     success: 'bg-green-500',
     error: 'bg-red-500',
-    warning: 'bg-yellow-400 text-black',
+    warning: 'bg-yellow-400',
     info: 'bg-blue-500',
   };
   toast.classList.add (typeClasses[type] || typeClasses.info);
@@ -349,15 +349,14 @@ solveGridButton.addEventListener ('click', () => {
 ///////////////////////////////////////
 //////////////////
 
-const displaySolvedSudokuGrid = async board => {
+const displaySolvedSudokuGrid = async (board, usboard) => {
   const gridImgContainer = document.getElementById ('sudokuImgGrid');
   gridImgContainer.innerHTML = '';
   gridImgContainer.classList.remove ('hidden');
 
   for (let row = 0; row < 9; row++) {
     for (let col = 0; col < 9; col++) {
-      const value = board[row][col];
-
+      value = board[row][col];
       const cell = document.createElement ('div');
       cell.className = `
         w-full h-full flex items-center justify-center text-3xl font-bold text-gray-800 bg-white
@@ -370,6 +369,12 @@ const displaySolvedSudokuGrid = async board => {
       cell.textContent = value;
 
       gridImgContainer.appendChild (cell);
+      if (usboard[row][col] === 0) {
+        console.log (usboard[row][col]);
+        cell.classList.remove ('text-gray-800');
+
+        cell.classList.add ('text-red-800');
+      }
     }
   }
 };
@@ -398,8 +403,8 @@ const validateAndFixSudokuGrid = async grid => {
 
   const newGrid = grid.map ((row, r) =>
     row.map ((cell, c) => {
-      if (cell === 0) return 0;
-      return isValid (r, c, cell) ? cell : 0;
+      if (cell === 0) return 0; // Skip blank cells
+      return isValid (r, c, cell) ? cell : 0; // Validate filled cells only
     })
   );
 
@@ -428,7 +433,7 @@ const sudokuImageClassifier = async () => {
     document.getElementById ('loading-msg').innerText = 'Processing...';
 
     // const url = 'http://127.0.0.1:8000/process-sudoku/';
-    const url = 'https://sudoku-server-tsc4.onrender.com/process-sudoku/';
+    const url = 'https://sudoku-backend-4ose.onrender.com/predict/';
 
     const timeoutDuration = 30000;
     let timeoutReached = false;
@@ -452,10 +457,16 @@ const sudokuImageClassifier = async () => {
       document.getElementById ('loading-msg').innerText =
         'Server is booting... Please wait a moment.';
     }
-    const validateData = await validateAndFixSudokuGrid (data);
+    console.log (data.grid);
+    const validateData = await validateAndFixSudokuGrid (data.grid);
+    console.log (validateData);
     const solvedBoard = solveSudoku (validateData);
-    displaySolvedSudokuGrid (solvedBoard.board);
-    canvas.classList.add ('hidden');
+    if (solvedBoard.success) {
+      displaySolvedSudokuGrid (solvedBoard.board, data.grid);
+    } else {
+      createToast ('Your board doesnot have any solution!', 'info', 6000);
+    }
+    //canvas.classList.add ('hidden');
     loader.classList.add ('hidden');
   } catch (err) {
     console.log (err);
